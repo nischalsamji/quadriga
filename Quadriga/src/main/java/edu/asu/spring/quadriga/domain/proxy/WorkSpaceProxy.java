@@ -37,6 +37,7 @@ public class WorkSpaceProxy implements IWorkSpace {
 	private Date createdDate;
 	private String updatedBy;
 	private Date updatedDate;
+	private String status;
 	/**
 	 *  Full workspace detail object. This would have object of type {@link WorkSpace} 
 	 */
@@ -450,7 +451,28 @@ public class WorkSpaceProxy implements IWorkSpace {
 			this.workspace.setUpdatedDate(updatedDate);
 		}
 	}
+	/**
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+    public String getStatus() {
+        return this.status;
+    }
 
+    /**
+     * {@inheritDoc}
+     * Also updates the local {@link IWorkSpace} object if it is not null
+     */
+    @Override
+    public void setStatus(String status) {
+        this.status = status;
+        if(this.workspace != null){
+            this.workspace.setStatus(status);
+        }
+    }
+
+	
 	/**
 	 * This class helps in fetching the full workspace object using workspace manager object.
 	 * Also sets the values of variables in {@link WorkSpaceProxy} to local {@link WorkSpace} object.
@@ -471,6 +493,7 @@ public class WorkSpaceProxy implements IWorkSpace {
 			this.workspace.setUpdatedDate(this.updatedDate);
 			this.workspace.setOwner(this.owner);
 			this.workspace.setProjectWorkspace(this.workspaceProject);
+			this.workspace.setStatus(this.status);
 		}
 
 	}

@@ -35,6 +35,7 @@ public class WorkSpace implements IWorkSpace
 	private Date createdDate;
 	private String updatedBy;
 	private Date updatedDate;
+	private String status;
 	
 	@Override
 	public String getWorkspaceId() {
@@ -159,6 +160,15 @@ public class WorkSpace implements IWorkSpace
 	public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;		
 	}
+	@Override
+	public String getStatus() {
+	    return status;
+	}
+	@Override
+	public void setStatus(String status) {
+	    this.status = status;     
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

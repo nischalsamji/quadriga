@@ -171,6 +171,17 @@ public class WorkspaceDTO extends CollaboratingDTO<WorkspaceCollaboratorDTOPK, W
     public void setCreateddate(Date createddate) {
         this.createddate = createddate;
     }
+/*    
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        if(this.isarchived || this.isdeactivated)
+            status = "Archived/Deactivated";
+        else
+            status = "Unarchived/Activated";
+    }*/
     
     public QuadrigaUserDTO getWorkspaceowner() {
         return workspaceowner;

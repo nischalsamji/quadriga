@@ -71,4 +71,8 @@ public interface IWorkSpace
 	
 	public abstract void setUpdatedDate(Date updatedDate);
 
+    public abstract String getStatus();
+    
+    public abstract void setStatus(String status);
+
 }

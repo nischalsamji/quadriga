@@ -75,9 +75,11 @@ ${project.projectName} <span style="font-size: 12px"><span title="No access" cla
 	<div style="display: none" class="toggled">
 	<ul class="workspaceToggleList">
 	<c:forEach items="${project.projectWorkspaces}" var="ws">
-		<li> <a href="${pageContext.servletContext.contextPath}/auth/workbench/workspace/workspacedetails/${ws.workspace.workspaceId}">${ws.workspace.workspaceName}</a>
-			<br>${ws.workspace.description}
-		</li>
+        <c:if test="${ws. == false }"> 
+		  <li> <a href="${pageContext.servletContext.contextPath}/auth/workbench/workspace/workspacedetails/${ws.workspace.workspaceId}">${ws.workspace.workspaceName}</a>
+			 <br>${ws.workspace.description}
+		  </li>
+        </c:if> 
 	</c:forEach>
 	<c:if test="${empty  project.projectWorkspaces}">
 		There are workspaces.
