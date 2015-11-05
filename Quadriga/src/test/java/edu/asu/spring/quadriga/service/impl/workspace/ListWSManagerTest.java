@@ -1,20 +1,17 @@
 package edu.asu.spring.quadriga.service.impl.workspace;
 
 import java.security.NoSuchAlgorithmException;
-
+import java.util.Date;
 import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
 import edu.asu.spring.quadriga.dao.workbench.IProjectWorkspaceDAO;
 import edu.asu.spring.quadriga.dao.workspace.IWorkspaceDAO;
-import edu.asu.spring.quadriga.dspace.service.impl.DspaceKeys;
-import edu.asu.spring.quadriga.dspace.service.impl.DspaceManager;
+import edu.asu.spring.quadriga.dspace.service.impl.DspaceItemSubmitter;
 import edu.asu.spring.quadriga.dspace.service.impl.DspaceMetadataItemEntity;
 import edu.asu.spring.quadriga.dto.WorkspaceDTO;
 import edu.asu.spring.quadriga.exceptions.QuadrigaStorageException;
@@ -38,11 +35,11 @@ public class ListWSManagerTest {
 
     @Before
     public void setup() {
-        workspaceDao = Mockito.mock(IWorkspaceDAO.class);   
-        projectWorkspaceDao = Mockito.mock(IProjectWorkspaceDAO.class); 
-        dspaceManager =  Mockito.mock(IDspaceManager.class); 
-        MockitoAnnotations.initMocks(this);       
-    }   
+        workspaceDao = Mockito.mock(IWorkspaceDAO.class);
+        projectWorkspaceDao = Mockito.mock(IProjectWorkspaceDAO.class);
+        dspaceManager = Mockito.mock(IDspaceManager.class);
+        MockitoAnnotations.initMocks(this);
+    }  
 
     
 
@@ -62,9 +59,9 @@ public class ListWSManagerTest {
         WorkspaceDTO workspaceDTO = new WorkspaceDTO();
         workspaceDTO.setIsarchived(false);
         Mockito.when(workspaceDao.getWorkspaceDTO(workSpaceId)).thenReturn(
-                workspaceDTO);         
+                workspaceDTO);
         Assert.assertFalse(listmanager.getArchiveStatus(workSpaceId));
-    }    
+    }
 
     @Test
     public void getDeactiveStatusReturnsTrue() throws QuadrigaStorageException {
@@ -87,22 +84,34 @@ public class ListWSManagerTest {
     }
     
     @Test
-    public void getProjectIdFromWorkspaceIdReturnSameString() throws QuadrigaStorageException {
+    public void getProjectIdFromWorkspaceIdReturnSameString()
+            throws QuadrigaStorageException {
         String workSpaceId = "10663fb3-8a81-498a-8e2f-423dcc17ac8a";
-        String value ="abc";
-        Mockito.when(projectWorkspaceDao.getCorrespondingProjectID(workSpaceId)).thenReturn(value);
+        String value = "abc";
+        Mockito.when(projectWorkspaceDao.getCorrespondingProjectID(workSpaceId))
+                .thenReturn(value);
         Assert.assertEquals("abc", value);
-        
-    }   
+    } 
    
     @Test
-    public void getItemMetadataAsJsonReturnSameString() throws QuadrigaStorageException, NoSuchAlgorithmException {
-        IDspaceMetadataItemEntity obj = new DspaceMetadataItemEntity();
-        obj.setSubmitter();
-        obj.setName("name");                    
-        Mockito.when(dspaceManager.getItemMetadata("fileid", "username", "password", null)).thenReturn(obj);
-        
-        
+    public void getItemMetadataAsJsonReturnSameString()
+            throws QuadrigaStorageException, NoSuchAlgorithmException {
+        IDspaceMetadataItemEntity dspaceMetaDetaIdentity = new DspaceMetadataItemEntity();
+        Date date = new Date();
+        String dateString = date.toString();
+        dspaceMetaDetaIdentity.setLastModifiedDate(date);
+        dspaceMetaDetaIdentity.setName("name");
+        DspaceItemSubmitter dspaceItemSubmitter = new DspaceItemSubmitter();
+        dspaceItemSubmitter.setFullname("fullname");
+        dspaceMetaDetaIdentity.setSubmitter(dspaceItemSubmitter);
+        Mockito.when(
+                dspaceManager.getItemMetadata("fileid", "username", "password",
+                        null)).thenReturn(dspaceMetaDetaIdentity);
+        Assert.assertEquals("name", dspaceMetaDetaIdentity.getName());
+        Assert.assertEquals(dateString, dspaceMetaDetaIdentity
+                .getLastModifiedDate().toString());
+        Assert.assertEquals("fullname", dspaceMetaDetaIdentity.getSubmitter()
+                .getFullname());
     }
     
 

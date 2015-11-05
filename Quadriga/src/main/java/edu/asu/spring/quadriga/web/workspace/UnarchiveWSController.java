@@ -38,20 +38,20 @@ public class UnarchiveWSController {
      * @throws QuadrigaAccessException
      */
     @AccessPolicies({
-        @ElementAccessPolicy(type = CheckedElementType.PROJECT, paramIndex = 1, userRole = {
-                RoleNames.ROLE_COLLABORATOR_ADMIN,
-                RoleNames.ROLE_PROJ_COLLABORATOR_ADMIN,
-                RoleNames.ROLE_PROJ_COLLABORATOR_CONTRIBUTOR }),
-                @ElementAccessPolicy(type = CheckedElementType.WORKSPACE, paramIndex = 2, userRole = {
-                        RoleNames.ROLE_WORKSPACE_COLLABORATOR_ADMIN,
-                        RoleNames.ROLE_WORKSPACE_COLLABORATOR_CONTRIBUTOR,
-                        RoleNames.ROLE_COLLABORATOR_ADMIN }) })
+            @ElementAccessPolicy(type = CheckedElementType.PROJECT, paramIndex = 1, userRole = {
+                    RoleNames.ROLE_COLLABORATOR_ADMIN,
+                    RoleNames.ROLE_PROJ_COLLABORATOR_ADMIN,
+                    RoleNames.ROLE_PROJ_COLLABORATOR_CONTRIBUTOR }),
+            @ElementAccessPolicy(type = CheckedElementType.WORKSPACE, paramIndex = 2, userRole = {
+                    RoleNames.ROLE_WORKSPACE_COLLABORATOR_ADMIN,
+                    RoleNames.ROLE_WORKSPACE_COLLABORATOR_CONTRIBUTOR,
+                    RoleNames.ROLE_COLLABORATOR_ADMIN }) })
     @RequestMapping(value = "auth/workbench/{workspaceid}/unarchiveSingleWorkspace", method = RequestMethod.GET)
     public ModelAndView unarchiveWorkspace(
             @RequestParam("projectid") String projectid,
             @PathVariable("workspaceid") String workspaceid,
             Principal principal, RedirectAttributes redirectAttributes)
-                    throws QuadrigaStorageException, QuadrigaAccessException {
+            throws QuadrigaStorageException, QuadrigaAccessException {
         ModelAndView model = new ModelAndView("redirect:/auth/workbench/"
                 + projectid);
         archiveWSManager.unArchiveWorkspace(workspaceid, principal.getName());
