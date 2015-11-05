@@ -63,7 +63,7 @@ public interface IListWSManager {
 	 * This method gets the archive status for the workspace id.
 	 * 
 	 * @param workspaceId
-	 * @return Boolean - true if archive
+	 * @return Boolean - true if workspace is archived
 	 * @author Gunpreet Singh
 	 * @throws QuadrigaStorageException
 	 */

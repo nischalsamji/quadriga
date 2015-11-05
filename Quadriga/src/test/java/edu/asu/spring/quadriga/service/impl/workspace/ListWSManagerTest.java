@@ -2,13 +2,19 @@ package edu.asu.spring.quadriga.service.impl.workspace;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+
 import junit.framework.Assert;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
 import edu.asu.spring.quadriga.dao.workbench.IProjectWorkspaceDAO;
 import edu.asu.spring.quadriga.dao.workspace.IWorkspaceDAO;
 import edu.asu.spring.quadriga.dspace.service.impl.DspaceItemSubmitter;
@@ -90,12 +96,12 @@ public class ListWSManagerTest {
         String value = "abc";
         Mockito.when(projectWorkspaceDao.getCorrespondingProjectID(workSpaceId))
                 .thenReturn(value);
-        Assert.assertEquals("abc", value);
+        Assert.assertEquals(value,listmanager.getProjectIdFromWorkspaceId(workSpaceId));
     } 
    
     @Test
     public void getItemMetadataAsJsonReturnSameString()
-            throws QuadrigaStorageException, NoSuchAlgorithmException {
+            throws QuadrigaStorageException, NoSuchAlgorithmException, JSONException {
         IDspaceMetadataItemEntity dspaceMetaDetaIdentity = new DspaceMetadataItemEntity();
         Date date = new Date();
         String dateString = date.toString();
@@ -106,12 +112,16 @@ public class ListWSManagerTest {
         dspaceMetaDetaIdentity.setSubmitter(dspaceItemSubmitter);
         Mockito.when(
                 dspaceManager.getItemMetadata("fileid", "username", "password",
-                        null)).thenReturn(dspaceMetaDetaIdentity);
-        Assert.assertEquals("name", dspaceMetaDetaIdentity.getName());
-        Assert.assertEquals(dateString, dspaceMetaDetaIdentity
-                .getLastModifiedDate().toString());
-        Assert.assertEquals("fullname", dspaceMetaDetaIdentity.getSubmitter()
-                .getFullname());
+                        null)).thenReturn(dspaceMetaDetaIdentity);  
+        JSONObject jsonObj = new JSONObject();
+        JSONObject jsonObj2 = new JSONObject();
+        JSONArray jsonArray = new JSONArray();        
+        jsonObj.put("filename", "name");
+        jsonObj.put("submitter", "fullname");
+        jsonObj.put("modifieddate", dateString);
+        jsonArray.put(jsonObj);
+        jsonObj2.putOpt("text", jsonArray);
+        Assert.assertEquals(jsonObj2.toString(),listmanager.getItemMetadataAsJson("fileid", "username", "password", null));        
     }
     
 
