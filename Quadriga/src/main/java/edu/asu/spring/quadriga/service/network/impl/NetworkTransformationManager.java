@@ -6,6 +6,7 @@ import edu.asu.spring.quadriga.domain.network.INetwork;
 import edu.asu.spring.quadriga.service.network.domain.impl.TransformedNetwork;
 import edu.asu.spring.quadriga.transform.Link;
 import edu.asu.spring.quadriga.transform.Node;
+import edu.asu.spring.quadriga.transform.PredicateNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,8 +88,39 @@ public class NetworkTransformationManager implements INetworkTransformationManag
             }
         }
 
-        ITransformedNetwork networkJSon = transformer.transformNetwork(networkNodeInfoList);
-        return networkJSon;
+        ITransformedNetwork transformedNetwork = transformer.transformNetwork(networkNodeInfoList);
+        // Combine all the nodes except predicate nodes
+
+        Map<String, Node> nodes = transformedNetwork.getNodes();
+        List<Link> links = transformedNetwork.getLinks();
+
+        // combine the nodes in the map
+        // nodes may contain multiple
+        Map<String, Node> updatedNodes = new HashMap<String, Node>();
+        int index = 0;
+        for (Node node: nodes.values()) {
+            // only update if they are not predicate nodes
+            if (!(node instanceof PredicateNode)) {
+                if(!updatedNodes.containsKey(node.getConceptId())) {
+                    updatedNodes.put(node.getConceptId(), node);
+                }
+            } else {
+                updatedNodes.put(String.valueOf(++index), node);
+            }
+        }
+        // update the links to point to new nodes
+        for (Link link: links) {
+            Node subjectNode = link.getSubject();
+            Node objectNode = link.getObject();
+            if (!(subjectNode instanceof PredicateNode)) {
+                link.setSubject(updatedNodes.get(subjectNode.getConceptId()));
+            }
+            if (!(objectNode instanceof PredicateNode)) {
+                link.setObject(updatedNodes.get(objectNode.getConceptId()));
+            }
+        }
+
+        return new TransformedNetwork(updatedNodes, links);
     }
 
     @Override
